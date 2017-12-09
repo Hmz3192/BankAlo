@@ -8,7 +8,9 @@ import java.util.Scanner;
  */
 public class BankerClass {
     private static int number;
-    int[] Available = {10, 5, 7};
+    private static int ziyuan_num;
+
+    int[] Available;
     int[][] Max;
     int[][] Alloction;
     int[][] Need;
@@ -24,19 +26,28 @@ public class BankerClass {
         BankerClass.number = number;
     }
 
-    public BankerClass(int num1) {
-        // Max={{6,3,2},{5,6,1},{2,3,2}};
+    public static void setZiyuan_num(int ziyuan_num) {
+        BankerClass.ziyuan_num = ziyuan_num;
+    }
+
+    public BankerClass(int num1, int ziyuan_num) {
         BankerClass.setNumber(num1);
-        Alloction = new int[num1][3];
-        Max = new int[num1][3];
-        Need = new int[num1][3];
-        Request = new int[num1][3];
-        Work = new int[3];
+        BankerClass.setZiyuan_num(ziyuan_num);
+
+        Alloction = new int[num1][ziyuan_num];
+        Max = new int[num1][ziyuan_num];
+        Need = new int[num1][ziyuan_num];
+        Request = new int[num1][ziyuan_num];
+        Work = new int[ziyuan_num];
         S = new int[num1];
+        Available = new int[ziyuan_num];
     }
 
     public void setSystemVariable() {//设置各初始系统变量，并判断是否处于安全状态。
-
+        System.out.println("请输入总资源数：");
+        for (int j = 0; j < ziyuan_num; j++) {
+            Available[j] = in.nextInt();
+        }
         setMax();
         setAlloction();
         printSystemVariable();
@@ -47,7 +58,7 @@ public class BankerClass {
         System.out.println("请设置各进程的最大需求矩阵Max：");
         for (int i = 0; i < number; i++) {
             System.out.println("请输入进程P" + i + "的最大资源需求量：");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 Max[i][j] = in.nextInt();
             }
         }
@@ -57,19 +68,19 @@ public class BankerClass {
         System.out.println("请设置请各进程分配矩阵Alloction：");
         for (int i = 0; i < number; i++) {
             System.out.println("晴输入进程P" + i + "的分配资源量：");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 Alloction[i][j] = in.nextInt();
             }
         }
         System.out.println("Available=Available-Alloction.");
         System.out.println("Need=Max-Alloction.");
-        for (int i = 0; i < 3; i++) {//设置Alloction矩阵
+        for (int i = 0; i < ziyuan_num; i++) {//设置Alloction矩阵
             for (int j = 0; j < number; j++) {
                 Available[i] = Available[i] - Alloction[j][i];
             }
         }
         for (int i = 0; i < number; i++) {//设置Need矩阵
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 Need[i][j] = Max[i][j] - Alloction[i][j];
             }
         }
@@ -80,20 +91,20 @@ public class BankerClass {
         System.out.println("进程  " + "   Max   " + "   Alloction " + "    Need  " + "     Available ");
         for (int i = 0; i < number; i++) {
             System.out.print("P" + i + "  ");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 System.out.print(Max[i][j] + "  ");
             }
             System.out.print("|  ");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 System.out.print(Alloction[i][j] + "  ");
             }
             System.out.print("|  ");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < ziyuan_num; j++) {
                 System.out.print(Need[i][j] + "  ");
             }
             System.out.print("|  ");
             if (i == 0) {
-                for (int j = 0; j < 3; j++) {
+                for (int j = 0; j < ziyuan_num; j++) {
                     System.out.print(Available[j] + "  ");
                 }
             }
@@ -107,10 +118,16 @@ public class BankerClass {
         System.out.println("请输入请求资源的进程编号：");
         num = in.nextInt();//设置全局变量进程编号num
         System.out.println("请输入请求各资源的数量：");
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < ziyuan_num; j++) {
             Request[num][j] = in.nextInt();
         }
-        System.out.println("即进程P" + num + "对各资源请求Request：(" + Request[num][0] + "," + Request[num][1] + "," + Request[num][2] + ").");
+        System.out.print("即进程P" + num + "对各资源请求Request：(" );
+        for(int j = 0;j<ziyuan_num;j++) {
+            if (j == ziyuan_num - 1) {
+                System.out.println(Request[num][j] + ").");
+            }else
+                System.out.print(+ Request[num][j] + "," );
+        }
 
         BankerAlgorithm();
     }
@@ -120,7 +137,7 @@ public class BankerClass {
 
         if (Request[num][0] <= Need[num][0] && Request[num][1] <= Need[num][1] && Request[num][2] <= Need[num][2]) {//判断Request是否小于Need
             if (Request[num][0] <= Available[0] && Request[num][1] <= Available[1] && Request[num][2] <= Available[2]) {//判断Request是否小于Alloction
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < ziyuan_num; i++) {
                     Available[i] -= Request[num][i];
                     Alloction[num][i] += Request[num][i];
                     Need[num][i] -= Request[num][i];
@@ -163,26 +180,26 @@ public class BankerClass {
 
                 if (Finish[i] == false && Need[i][0] <= Work[0] && Need[i][1] <= Work[1] && Need[i][2] <= Work[2]) {//判断条件
                     System.out.print("P" + i + "  ");
-                    for (int k = 0; k < 3; k++) {
+                    for (int k = 0; k < ziyuan_num; k++) {
                         System.out.print(Work[k] + "  ");
                     }
                     System.out.print("|  ");
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < ziyuan_num; j++) {
                         Work[j] += Alloction[i][j];
                     }
                     Finish[i] = true;//当当前进程能满足时
                     S[count] = i;//设置当前序列排号
 
                     count++;//满足进程数加1
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < ziyuan_num; j++) {
                         System.out.print(Alloction[i][j] + "  ");
                     }
                     System.out.print("|  ");
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < ziyuan_num; j++) {
                         System.out.print(Need[i][j] + "  ");
                     }
                     System.out.print("|  ");
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < ziyuan_num; j++) {
                         System.out.print(Work[j] + "  ");
                     }
                     System.out.println();
