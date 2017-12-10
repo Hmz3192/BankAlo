@@ -13,10 +13,10 @@ public class TestBankerClass {
         boolean Choose = true;
         String C;
         Scanner in = new Scanner(System.in);
-        System.out.println("这是一个多进程，初始系统可用三类资源为{10,5,7}的银行家算法：");
-        System.out.println("请输入进程数：");
+        System.out.println("这是一个多进程，初始系统考虑n个客户的请求m个资源的银行家算法：");
+        System.out.println("请输入n个客户数：");
         int num = in.nextInt();
-        System.out.println("请输入资源数：");
+        System.out.println("请输入m个资源数：");
         int ziyuan_num = in.nextInt();
         BankerClass T = new BankerClass(num,ziyuan_num);
         T.setSystemVariable();
