@@ -9,7 +9,9 @@ import java.util.Scanner;
 public class BankerClass {
     private static int numOfCustomers;
     private static int numOfResources;
-
+    int[] AvailableOrign;
+    int[][] AlloctionOrign;
+    int[][] NeedOrign;
     int[] Available;
     int[][] Max;
     int[][] Alloction;
@@ -50,7 +52,7 @@ public class BankerClass {
         }
         setMax();
         setAlloction();
-        printSystemVariable();
+        initMatersOrPrint(false);
         SecurityAlgorithm();
     }
 
@@ -86,7 +88,69 @@ public class BankerClass {
         }
     }
 
-    public void printSystemVariable() {
+
+
+    public void setRequest() {//设置请求资源量Request
+
+
+        System.out.println("请输入请求资源的客户编号：");
+        num = in.nextInt();//设置全局变量进程编号num
+        System.out.println("请输入请求各种资源的数量：");
+        for (int j = 0; j < numOfResources; j++) {
+            Request[num][j] = in.nextInt();
+        }
+        System.out.print("即客户 P" + num + "对各资源请求Request：(");
+        for (int j = 0; j < numOfResources; j++) {
+            if (j == numOfResources - 1) {
+                System.out.println(Request[num][j] + ").");
+            } else
+                System.out.print(+Request[num][j] + ",");
+        }
+
+        BankerAlgorithm();
+    }
+
+    public void BankerAlgorithm() {//银行家算法,资源请求算法
+        boolean T = true;
+        AvailableOrign = Available;
+        AlloctionOrign = Alloction;
+        NeedOrign = Need;
+
+        if (Request[num][0] <= Need[num][0] && Request[num][1] <= Need[num][1] && Request[num][2] <= Need[num][2]) {//判断Request是否小于Need
+            if (Request[num][0] <= Available[0] && Request[num][1] <= Available[1] && Request[num][2] <= Available[2]) {//判断Request是否小于Alloction
+                for (int i = 0; i < numOfResources; i++) {
+                    Available[i] -= Request[num][i];
+                    Alloction[num][i] += Request[num][i];
+                    Need[num][i] -= Request[num][i];
+                }
+
+            } else {
+                System.out.println("当前没有足够的资源可分配，客户 P" + num + "需等待。");
+                initMatersOrPrint(true);
+                T = false;
+            }
+
+        } else {
+            System.out.println("客户 P" + num + "请求已经超出最大需求量Need.");
+            initMatersOrPrint(true);
+            T = false;
+        }
+
+        if (T == true) {
+            initMatersOrPrint(false);
+            System.out.println("现在进入安全算法：");
+            SecurityAlgorithm();
+        }
+    }
+
+    private void initMatersOrPrint(boolean a) {
+        //init
+        if(a) {
+            Need = NeedOrign;
+            Alloction = AlloctionOrign;
+            Available = AvailableOrign;
+            System.out.println("恢复原来状态：");
+        }
         System.out.println("此时资源分配量如下：");
         System.out.println("客户  " + "   Max   " + "   Alloction " + "    Need  " + "     Available ");
         for (int i = 0; i < numOfCustomers; i++) {
@@ -112,57 +176,10 @@ public class BankerClass {
         }
     }
 
-    public void setRequest() {//设置请求资源量Request
-
-
-        System.out.println("请输入请求资源的客户编号：");
-        num = in.nextInt();//设置全局变量进程编号num
-        System.out.println("请输入请求各种资源的数量：");
-        for (int j = 0; j < numOfResources; j++) {
-            Request[num][j] = in.nextInt();
-        }
-        System.out.print("即客户 P" + num + "对各资源请求Request：(" );
-        for(int j = 0;j<numOfResources;j++) {
-            if (j == numOfResources - 1) {
-                System.out.println(Request[num][j] + ").");
-            }else
-                System.out.print(+ Request[num][j] + "," );
-        }
-
-        BankerAlgorithm();
-    }
-
-    public void BankerAlgorithm() {//银行家算法,资源请求算法
-        boolean T = true;
-
-        if (Request[num][0] <= Need[num][0] && Request[num][1] <= Need[num][1] && Request[num][2] <= Need[num][2]) {//判断Request是否小于Need
-            if (Request[num][0] <= Available[0] && Request[num][1] <= Available[1] && Request[num][2] <= Available[2]) {//判断Request是否小于Alloction
-                for (int i = 0; i < numOfResources; i++) {
-                    Available[i] -= Request[num][i];
-                    Alloction[num][i] += Request[num][i];
-                    Need[num][i] -= Request[num][i];
-                }
-
-            } else {
-                System.out.println("当前没有足够的资源可分配，客户 P" + num + "需等待。");
-                T = false;
-            }
-        } else {
-            System.out.println("客户 P" + num + "请求已经超出最大需求量Need.");
-            T = false;
-        }
-
-        if (T == true) {
-            printSystemVariable();
-            System.out.println("现在进入安全算法：");
-            SecurityAlgorithm();
-        }
-    }
-
 
     public void SecurityAlgorithm() {//安全算法
         boolean[] Finish = new boolean[numOfCustomers];
-        for(int i =0;i<numOfCustomers;i++) {
+        for (int i = 0; i < numOfCustomers; i++) {
             Finish[i] = false;//初始化Finish
         }
         int count = 0;//完成进程数
@@ -218,10 +235,35 @@ public class BankerClass {
             }
             if (count < circle) {//判断完成进程数是否小于循环圈数
                 count = 5;
+                Need = NeedOrign;
+                Alloction = AlloctionOrign;
+                Available = AvailableOrign;
                 System.out.println("当前系统处于不安全状态，故不存在安全序列。");
                 System.out.println("恢复原来状态：");
-
-                break;//跳出循环
+                System.out.println("此时资源分配量如下：");
+                System.out.println("客户  " + "   Max   " + "   Alloction " + "    Need  " + "     Available ");
+                for (int i = 0; i < numOfCustomers; i++) {
+                    System.out.print("P" + i + "  ");
+                    for (int j = 0; j < numOfResources; j++) {
+                        System.out.print(Max[i][j] + "  ");
+                    }
+                    System.out.print("|  ");
+                    for (int j = 0; j < numOfResources; j++) {
+                        System.out.print(Alloction[i][j] + "  ");
+                    }
+                    System.out.print("|  ");
+                    for (int j = 0; j < numOfResources; j++) {
+                        System.out.print(Need[i][j] + "  ");
+                    }
+                    System.out.print("|  ");
+                    if (i == 0) {
+                        for (int j = 0; j < numOfResources; j++) {
+                            System.out.print(Available[j] + "  ");
+                        }
+                    }
+                    System.out.println();
+                    break;//跳出循环
+                }
             }
         }
     }
