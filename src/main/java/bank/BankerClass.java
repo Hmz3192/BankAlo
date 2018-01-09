@@ -7,22 +7,20 @@ import java.util.Scanner;
  * Created by ThinKPad on 2017/12/2.
  */
 public class BankerClass {
-    private static int numOfCustomers;
-    private static int numOfResources;
-    int[] AvailableOrign;
-    int[][] AlloctionOrign;
-    int[][] NeedOrign;
-    int[] Available;
-    int[][] Max;
-    int[][] Alloction;
-    int[][] Need;
-    int[][] Request;
-    int[] Work;
+    private static int numOfCustomers; //顾客的数量
+    private static int numOfResources; //资源的数量
+    int[] AvailableOrign; //存储现有资源的数组，这个用来恢复原来状态
+    int[][] AlloctionOrign; //存储所分配的资源的数组，这个也是用来恢复原来状态
+    int[][] NeedOrign; //存储剩余的资源，这个用来恢复原来状态
+    int[] Available; //存储现有资源的数组
+    int[][] Max; //存储最大需求的资源数组
+    int[][] Alloction; //存储所分配的资源数组
+    int[][] Need; //存储剩余的资源数组
+    int[][] Request; //存储请求的资源数组
+    int[] Work; //存储正在处理的资源数组
     int[] S;//安全序列
     int num = 0;//进程编号
     Scanner in = new Scanner(System.in);
-    //进程数
-
 
     public static void setNumber(int number) {
         BankerClass.numOfCustomers = number;
@@ -35,7 +33,6 @@ public class BankerClass {
     public BankerClass(int num1, int ziyuan_num) {
         BankerClass.setNumber(num1);
         BankerClass.setZiyuan_num(ziyuan_num);
-
         Alloction = new int[num1][ziyuan_num];
         Max = new int[num1][ziyuan_num];
         Need = new int[num1][ziyuan_num];
@@ -123,19 +120,16 @@ public class BankerClass {
                     Alloction[num][i] += Request[num][i];
                     Need[num][i] -= Request[num][i];
                 }
-
             } else {
                 System.out.println("当前没有足够的资源可分配，客户 P" + num + "需等待。");
                 initMatersOrPrint(true);
                 T = false;
             }
-
         } else {
             System.out.println("客户 P" + num + "请求已经超出最大需求量Need.");
             initMatersOrPrint(true);
             T = false;
         }
-
         if (T == true) {
             initMatersOrPrint(false);
             System.out.println("现在进入安全算法：");
@@ -206,7 +200,6 @@ public class BankerClass {
                     }
                     Finish[i] = true;//当当前进程能满足时
                     S[count] = i;//设置当前序列排号
-
                     count++;//满足进程数加1
                     for (int j = 0; j < numOfResources; j++) {
                         System.out.print(Alloction[i][j] + "  ");
@@ -221,10 +214,8 @@ public class BankerClass {
                     }
                     System.out.println();
                 }
-
             }
             circle++;//循环圈数加1
-
             if (count == numOfCustomers) {//判断是否满足所有进程需要
                 System.out.print("此时存在一个安全序列：");
                 for (int i = 0; i < numOfCustomers; i++) {//输出安全序列
@@ -235,35 +226,8 @@ public class BankerClass {
             }
             if (count < circle) {//判断完成进程数是否小于循环圈数
                 count = 5;
-                Need = NeedOrign;
-                Alloction = AlloctionOrign;
-                Available = AvailableOrign;
                 System.out.println("当前系统处于不安全状态，故不存在安全序列。");
-                System.out.println("恢复原来状态：");
-                System.out.println("此时资源分配量如下：");
-                System.out.println("客户  " + "   Max   " + "   Alloction " + "    Need  " + "     Available ");
-                for (int i = 0; i < numOfCustomers; i++) {
-                    System.out.print("P" + i + "  ");
-                    for (int j = 0; j < numOfResources; j++) {
-                        System.out.print(Max[i][j] + "  ");
-                    }
-                    System.out.print("|  ");
-                    for (int j = 0; j < numOfResources; j++) {
-                        System.out.print(Alloction[i][j] + "  ");
-                    }
-                    System.out.print("|  ");
-                    for (int j = 0; j < numOfResources; j++) {
-                        System.out.print(Need[i][j] + "  ");
-                    }
-                    System.out.print("|  ");
-                    if (i == 0) {
-                        for (int j = 0; j < numOfResources; j++) {
-                            System.out.print(Available[j] + "  ");
-                        }
-                    }
-                    System.out.println();
-                    break;//跳出循环
-                }
+                initMatersOrPrint(true);
             }
         }
     }
