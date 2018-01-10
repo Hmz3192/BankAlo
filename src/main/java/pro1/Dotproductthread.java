@@ -8,7 +8,7 @@ public class Dotproductthread extends Thread{
     private int start ;
     private int end ;
     private long sum = 0 ;
-
+    //初始化，共并行乘法使用
     public Dotproductthread(Matrix matrixA, Matrix matrixB, int st, int en,int size){
         this.matrixA = matrixA;
         this.matrixB = matrixB;
@@ -18,6 +18,7 @@ public class Dotproductthread extends Thread{
         int[][] matrix = new int[size][size];
         this.matrixC.setMatrix(matrix);
     }
+    //并行乘法
     public Matrix mutithreadedMultiply(Matrix input1,Matrix input2){
         int i,j,k;
         for( i=start; i< end; i += 2)

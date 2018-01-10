@@ -12,6 +12,9 @@ public class BankerClass {
     int[] AvailableOrign; //存储现有资源的数组，这个用来恢复原来状态
     int[][] AlloctionOrign; //存储所分配的资源的数组，这个也是用来恢复原来状态
     int[][] NeedOrign; //存储剩余的资源，这个用来恢复原来状态
+
+
+
     int[] Available; //存储现有资源的数组
     int[][] Max; //存储最大需求的资源数组
     int[][] Alloction; //存储所分配的资源数组

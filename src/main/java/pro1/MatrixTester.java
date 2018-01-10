@@ -4,6 +4,7 @@ import org.junit.Test;
 
 public class MatrixTester {
 
+    //初始化矩阵
     @Test
     public void test1(){
         Matrix m = new Matrix(2, 3);
@@ -12,9 +13,7 @@ public class MatrixTester {
         System.out.println(m.toString());
         System.out.println("列数"+m.getNumCols() + "||行数"+m.getNumRows());
     }
-
-
-    //测试读取文件方式读取矩阵
+    //测试读取文件方式初始化矩阵
     @Test
     public void test2(){
 //        Matrix m = new Matrix(2, 3);
@@ -25,7 +24,7 @@ public class MatrixTester {
         System.out.println("列数"+m.getNumCols() + "||行数"+m.getNumRows());
 
     }
-
+    //串行乘法
     @Test
     public void testMult() {
         Matrix m = new Matrix(2, 2);
@@ -38,8 +37,7 @@ public class MatrixTester {
         System.out.println("相乘之后：");
         System.out.println(matrix.toString());
     }
-
-
+    //并行乘法，并于串行乘法比较时间
     @Test
     public void testMultThread() {
         long startTime;

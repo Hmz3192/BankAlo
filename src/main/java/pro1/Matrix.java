@@ -87,17 +87,13 @@ public class Matrix {
             }
         }
     }
-
-
     public int getNumRows() {
         return this.matrix.length;
     }
 
     public int getNumCols() {
         return this.matrix[0].length;
-
     }
-
     public void setValue(int row,int col,int val){
         matrix[row][col] = val;
     }
@@ -120,7 +116,7 @@ public class Matrix {
         return s;
     }
 
-    //矩阵乘法
+    //矩阵串行乘法
     public Matrix normalMultiply(Matrix input){
         if(this.matrix[0].length != input.matrix[0].length){
             System.out.println("两个矩阵不能相乘");
